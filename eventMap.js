@@ -346,7 +346,7 @@ var eventMap = {
     "Western Europe": "",
     "Eastern Europe": "",
     "Middle East / North Africa": "",
-    "Sub Saharan Africa": "Rwanda - Rwandan Civil War",
+    "Sub Saharan Africa": "Rwanda - Rwanda Genocide",
     "Australasia Oceania": ""
   },
   "1995": {
@@ -360,7 +360,7 @@ var eventMap = {
     "Western Europe": "",
     "Eastern Europe": "",
     "Middle East / North Africa": "",
-    "Sub Saharan Africa": "Rwanda - Rwanda Genocide",
+    "Sub Saharan Africa": "",
     "Australasia Oceania": ""
   },
   "1996": {
