@@ -45,6 +45,7 @@ var cfg = {
   radius: 20,
   maxOpacity: .8,
   scaleRadius: true,
+  max: 0.5,
   useLocalExtrema: true,
   latField: 'lat',
   lngField: 'lng',
@@ -72,6 +73,7 @@ function update(data, year=1970) {
       } else {
         if (data[j]['values'][i][0] == year) {
           var thing = data[j]['values'][i][2].concat(data[j]['values'][i][1])
+          console.log(thing)
           newData.push(thing)
         }
       }
@@ -530,6 +532,8 @@ window.nv.tooltip.* also has various helper methods.
                         .style("border-top","solid 1px " + p.color)
                         ;
             });
+
+            update(someData, d.value);
 
             var html = table.node().outerHTML;
 
@@ -2203,7 +2207,6 @@ nv.models.stackedAreaChart = function() {
               if (typeof point === 'undefined') return;
               if (typeof singlePoint === 'undefined') singlePoint = point;
               if (typeof pointXLocation === 'undefined') pointXLocation = chart.xScale()(chart.x()(point,pointIndex));
-              update(someData, chart.x()(point,pointIndex));
               allData.push({
                   key: series.key,
                   value: chart.y()(point, pointIndex),
@@ -2262,6 +2265,7 @@ nv.models.stackedAreaChart = function() {
       interactiveLayer.dispatch.on("elementMouseout",function(e) {
           //dispatch.tooltipHide();
           stacked.clearHighlights();
+          update(someData, 0)
       });
 
 
