@@ -73,7 +73,6 @@ function update(data, year=1970) {
       } else {
         if (data[j]['values'][i][0] == year) {
           var thing = data[j]['values'][i][2].concat(data[j]['values'][i][1])
-          console.log(thing)
           newData.push(thing)
         }
       }
