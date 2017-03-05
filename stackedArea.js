@@ -1,7 +1,7 @@
-d3.json('kill.json', function(data) {
+d3.json('nkill_v3_ordered.json', function(data) {
   nv.addGraph(function() {
     var chart = nv.models.stackedAreaChart()
-                  .margin({right: 100})
+                  .margin({left: 300, right: 50})
                   .x(function(d) { return d[0] })   //We can modify the data accessor functions...
                   .y(function(d) { return d[1] })   //...in case your data is formatted differently.
                   .useInteractiveGuideline(true)    //Tooltips which show all data points. Very nice!

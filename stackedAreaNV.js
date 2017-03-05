@@ -423,6 +423,7 @@ window.nv.tooltip.* also has various helper methods.
         //By default, the tooltip model renders a beautiful table inside a DIV.
         //You can override this function if a custom tooltip is desired.
         var contentGenerator = function(d) {
+          console.log(d)
             if (content != null) return content;
 
             if (d == null) return '';
@@ -468,8 +469,57 @@ window.nv.tooltip.* also has various helper methods.
             });
 
             var html = table.node().outerHTML;
+
+            html += "<br/><hr/><br/>"
+
+            var table = d3.select(document.createElement("table"))
+              .style("table-layout", "fixed");
+            var theadEnter = table.selectAll("thead")
+                .data([d])
+                .enter().append("thead");
+            theadEnter.append("tr")
+                .append("td")
+                .attr("colspan",3)
+                .append("strong")
+                    .classed("x-value",true)
+
+            var tbodyEnter = table.selectAll("tbody")
+                .data([d])
+                .enter().append("tbody");
+            var trowEnter = tbodyEnter.selectAll("tr")
+                .data(function(p) { return p.series})
+                .enter()
+                .append("tr")
+                .style("width", "300px")
+                ;
+            trowEnter.append("td")
+                .classed("legend-color-guide",true)
+                .append("div")
+                    .style("background-color", function(p) { return p.color});
+            trowEnter.append("td")
+                .classed("key",true)
+                .style("width", "300px")
+                .style("word-wrap", "break-word")
+                .text(cleanEvent);
+
+            function cleanEvent(p) {
+              event = p.event;
+              if (event != "") {
+                return event.replace("?","\n")
+              }
+            }
+
+            trowEnter.selectAll("td").each(function(p) {
+                if (p.event === "")
+                    d3.select(this).remove();
+            });
+
+            html += table.node().outerHTML;
+
+
             if (d.footer !== undefined)
-                html += "<div class='footer'>" + d.footer + "</div>";
+                html += "<div class='footer'>" + d.footer + "</div><br/>";
+
             return html;
 
         };
@@ -512,6 +562,7 @@ window.nv.tooltip.* also has various helper methods.
                 container = body.append("div")
                     .attr("class", "nvtooltip " + (classes? classes: "xy-tooltip"))
                     .attr("id",id)
+                    .style("width", "280px")
                     ;
             }
 
@@ -532,7 +583,7 @@ window.nv.tooltip.* also has various helper methods.
 
             convertViewBoxRatio();
 
-            var left = (fixedPosition != null) ? fixedPosition.left : position.left;
+            var left = (fixedPosition != null) ? fixedPosition.left : position.left - 340;
             var top = (fixedPosition != null) ? fixedPosition.top : ((fixedTop != null) ? fixedTop : position.top);
             var container = getTooltipContainer(contentGenerator(data));
             tooltipElem = container;
@@ -1754,7 +1805,7 @@ nv.models.stackedAreaChart = function() {
     , interactiveLayer = nv.interactiveGuideline()
     ;
 
-  var margin = {top: 30, right: 25, bottom: 50, left: 60}
+  var margin = {top: 30, right: 60, bottom: 50, left: 60}
     , width = null
     , height = null
     , color = nv.utils.defaultColor() // a function that takes in d, i and returns color
@@ -1819,6 +1870,8 @@ nv.models.stackedAreaChart = function() {
                              - margin.left - margin.right,
           availableHeight = (height || parseInt(container.style('height')) || 400)
                              - margin.top - margin.bottom;
+
+      console.log(availableWidth);
 
       chart.update = function() { container.transition().duration(transitionDuration).call(chart); };
       chart.container = this;
@@ -2087,12 +2140,12 @@ nv.models.stackedAreaChart = function() {
               if (typeof point === 'undefined') return;
               if (typeof singlePoint === 'undefined') singlePoint = point;
               if (typeof pointXLocation === 'undefined') pointXLocation = chart.xScale()(chart.x()(point,pointIndex));
-              console.log()
               allData.push({
                   key: series.key,
                   value: chart.y()(point, pointIndex),
                   color: color(series,series.seriesIndex),
-                  stackedValue: point.display
+                  stackedValue: point.display,
+                  event: eventMap[chart.x()(point,pointIndex)][series.key]
               });
           });
 
@@ -2125,7 +2178,7 @@ nv.models.stackedAreaChart = function() {
           var xValue = xAxis.tickFormat()(chart.x()(singlePoint,pointIndex));
           interactiveLayer.tooltip
                   //.position({left: pointXLocation + margin.left, top: e.mouseY + margin.top})
-                  .position({left: margin.left, top: margin.top + 200})
+                  .position({left: margin.left, top: margin.top + 150})
                   .chartContainer(that.parentNode)
                   .enabled(tooltips)
                   .valueFormatter(function(d,i) {
@@ -2143,7 +2196,7 @@ nv.models.stackedAreaChart = function() {
       });
 
       interactiveLayer.dispatch.on("elementMouseout",function(e) {
-          dispatch.tooltipHide();
+          //dispatch.tooltipHide();
           stacked.clearHighlights();
       });
 
