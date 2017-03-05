@@ -17,6 +17,70 @@ nv.logs = {}; //stores some statistics and potential error messages
 
 nv.dispatch = d3.dispatch('render_start', 'render_end');
 
+
+var data = geo;
+var heatData = [];
+
+var someData = data;
+
+//document.body.addEventListener('click', update(data), true);
+
+for (var j = 0; j < 12; j++) {
+  for(var i = 0; i < data[j]['values'].length; i++) {
+    if (data[j]['values'][i][1] != 0) {
+      var thing = data[j]['values'][i][2].concat(data[j]['values'][i][1])
+      heatData.push(thing)
+    }
+  }
+}
+
+var baseLayer = L.tileLayer(
+  'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution: '...',
+    maxZoom: 18
+  }
+);
+
+var cfg = {
+  radius: 20,
+  maxOpacity: .8,
+  scaleRadius: true,
+  useLocalExtrema: true,
+  latField: 'lat',
+  lngField: 'lng',
+  valueField: 'count'
+};
+
+var heatmapLayer = L.heatLayer(heatData, cfg);
+
+var map = new L.map('map', {
+  center: new L.LatLng(0, 0),
+  zoom: 1,
+  layers: [baseLayer, heatmapLayer]
+});
+
+function update(data, year=1970) {
+  if (typeof year === 'string' || year instanceof String) {
+    year = parseInt(year)
+  }
+  newData = []
+  for (var j = 0; j < 12; j++) {
+    for(var i = 0; i < data[j]['values'].length; i++) {
+      if (year === 0) {
+        var thing = data[j]['values'][i][2].concat(data[j]['values'][i][1])
+        newData.push(thing)
+      } else {
+        if (data[j]['values'][i][0] == year) {
+          var thing = data[j]['values'][i][2].concat(data[j]['values'][i][1])
+          newData.push(thing)
+        }
+      }
+    }
+  }
+  heatmapLayer.setLatLngs(newData)
+  heatmapLayer.setOptions(cfg)
+}
+
 // *************************************************************************
 //  Development render timers - disabled if dev = false
 
@@ -423,7 +487,6 @@ window.nv.tooltip.* also has various helper methods.
         //By default, the tooltip model renders a beautiful table inside a DIV.
         //You can override this function if a custom tooltip is desired.
         var contentGenerator = function(d) {
-          console.log(d)
             if (content != null) return content;
 
             if (d == null) return '';
@@ -2081,7 +2144,6 @@ nv.models.stackedAreaChart = function() {
           });
         else
           data = data.map(function(d,i) {
-            console.log(series[e.seriesIndex])
             d.disabled = (i != e.seriesIndex);
             return d
           });
@@ -2141,6 +2203,7 @@ nv.models.stackedAreaChart = function() {
               if (typeof point === 'undefined') return;
               if (typeof singlePoint === 'undefined') singlePoint = point;
               if (typeof pointXLocation === 'undefined') pointXLocation = chart.xScale()(chart.x()(point,pointIndex));
+              update(someData, chart.x()(point,pointIndex));
               allData.push({
                   key: series.key,
                   value: chart.y()(point, pointIndex),
