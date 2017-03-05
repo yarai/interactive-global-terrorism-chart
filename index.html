@@ -17,14 +17,19 @@
       }
     </style>
     <link href="nv.d3.css" rel="stylesheet">
+    <link rel="stylesheet" href="leaflet.css">
 </head>
 <body>
   <h1 style="text-align:center;">Terrorism Timeline</h1>
   <div id="chart">
     <svg></svg>
   </div>
+  <div id="map" style="margin-left: 300px; width: auto; height: 550px"></div>
   <script type="text/javascript" src="d3.js"></script>
   <script type="text/javascript" src="eventMap.js"></script>
+  <script src="leaflet.js"></script>
+  <script src="leaflet-heat.js"></script>
+  <script src='geo_v4_small_ordered.js' type='text/javascript'></script>
   <script type="text/javascript" src="stackedAreaNV.js"></script>
   <script type="text/javascript" src="stackedArea.js"></script>
 </body>

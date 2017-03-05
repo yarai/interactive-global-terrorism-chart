@@ -470,7 +470,7 @@ window.nv.tooltip.* also has various helper methods.
 
             var html = table.node().outerHTML;
 
-            html += "<br/><hr/><br/>"
+            html += "<br/><hr/>"
 
             var table = d3.select(document.createElement("table"))
               .style("table-layout", "fixed");
@@ -583,7 +583,7 @@ window.nv.tooltip.* also has various helper methods.
 
             convertViewBoxRatio();
 
-            var left = (fixedPosition != null) ? fixedPosition.left : position.left - 340;
+            var left = (fixedPosition != null) ? fixedPosition.left : position.left - 350;
             var top = (fixedPosition != null) ? fixedPosition.top : ((fixedTop != null) ? fixedTop : position.top);
             var container = getTooltipContainer(contentGenerator(data));
             tooltipElem = container;
@@ -2081,6 +2081,7 @@ nv.models.stackedAreaChart = function() {
           });
         else
           data = data.map(function(d,i) {
+            console.log(series[e.seriesIndex])
             d.disabled = (i != e.seriesIndex);
             return d
           });

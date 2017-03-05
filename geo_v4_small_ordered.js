@@ -1,4 +1,4 @@
-[
+var geo = [
   {
     "key": ["North America"],
     "values": [
